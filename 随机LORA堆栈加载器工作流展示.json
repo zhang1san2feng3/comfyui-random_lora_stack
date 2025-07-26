@@ -1,239 +1,1170 @@
 {
-  "3": {
-    "inputs": {
-      "seed": 500991955154757,
-      "steps": 20,
-      "cfg": 8,
-      "sampler_name": "euler",
-      "scheduler": "normal",
-      "denoise": 1,
-      "model": [
-        "11",
-        0
+  "id": "db10bc0d-db56-4e68-9e2f-ed21be2eec8a",
+  "revision": 0,
+  "last_node_id": 36,
+  "last_link_id": 57,
+  "nodes": [
+    {
+      "id": 12,
+      "type": "CLIPSetLastLayer",
+      "pos": [
+        -239.49591064453125,
+        559.9086303710938
       ],
-      "positive": [
-        "6",
-        0
+      "size": [
+        270,
+        58
       ],
-      "negative": [
-        "7",
-        0
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "CLIP",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 15
+        }
       ],
-      "latent_image": [
-        "5",
-        0
-      ]
-    },
-    "class_type": "KSampler",
-    "_meta": {
-      "title": "K采样器"
-    }
-  },
-  "4": {
-    "inputs": {
-      "ckpt_name": "Illustrious\\Illustrious-XL-v1.0.safetensors"
-    },
-    "class_type": "CheckpointLoaderSimple",
-    "_meta": {
-      "title": "Checkpoint加载器(简易)"
-    }
-  },
-  "5": {
-    "inputs": {
-      "width": 512,
-      "height": 512,
-      "batch_size": 1
-    },
-    "class_type": "EmptyLatentImage",
-    "_meta": {
-      "title": "空Latent"
-    }
-  },
-  "6": {
-    "inputs": {
-      "text": [
-        "28",
-        0
+      "outputs": [
+        {
+          "label": "CLIP",
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            16
+          ]
+        }
       ],
-      "speak_and_recognation": {
-        "__value__": [
-          false,
-          true
-        ]
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.45",
+        "Node name for S&R": "CLIPSetLastLayer",
+        "widget_ue_connectable": {}
       },
-      "clip": [
-        "11",
-        1
+      "widgets_values": [
+        -2
       ]
     },
-    "class_type": "CLIPTextEncode",
-    "_meta": {
-      "title": "CLIP文本编码器"
-    }
-  },
-  "7": {
-    "inputs": {
-      "text": "text, watermark",
-      "speak_and_recognation": {
-        "__value__": [
-          false,
-          true
-        ]
+    {
+      "id": 11,
+      "type": "CR Apply LoRA Stack",
+      "pos": [
+        180.60865783691406,
+        262.80914306640625
+      ],
+      "size": [
+        199.95663452148438,
+        66
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "模型",
+          "name": "model",
+          "type": "MODEL",
+          "link": 11
+        },
+        {
+          "label": "CLIP",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 16
+        },
+        {
+          "label": "LoRA堆",
+          "name": "lora_stack",
+          "type": "LORA_STACK",
+          "link": 10
+        }
+      ],
+      "outputs": [
+        {
+          "label": "模型",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            48
+          ]
+        },
+        {
+          "label": "CLIP",
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            49,
+            50
+          ]
+        },
+        {
+          "name": "show_help",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "ComfyUI_Comfyroll_CustomNodes",
+        "ver": "d78b780ae43fcf8c6b7c6505e6ffb4584281ceca",
+        "Node name for S&R": "CR Apply LoRA Stack",
+        "widget_ue_connectable": {}
       },
-      "clip": [
-        "11",
-        1
-      ]
+      "widgets_values": []
     },
-    "class_type": "CLIPTextEncode",
-    "_meta": {
-      "title": "CLIP文本编码器"
-    }
-  },
-  "8": {
-    "inputs": {
-      "samples": [
-        "3",
-        0
+    {
+      "id": 32,
+      "type": "ShowText|pysssss",
+      "pos": [
+        140.29473876953125,
+        434.59051513671875
       ],
-      "vae": [
-        "4",
-        2
-      ]
-    },
-    "class_type": "VAEDecode",
-    "_meta": {
-      "title": "VAE解码"
-    }
-  },
-  "9": {
-    "inputs": {
-      "filename_prefix": "ComfyUI",
-      "images": [
-        "8",
-        0
-      ]
-    },
-    "class_type": "SaveImage",
-    "_meta": {
-      "title": "保存图像"
-    }
-  },
-  "10": {
-    "inputs": {
-      "seed": 28870165,
-      "lora_folder1": "",
-      "weight1": 1,
-      "enable1": false,
-      "lora_folder2": "",
-      "weight2": 1,
-      "enable2": false,
-      "lora_folder3": "",
-      "weight3": 1,
-      "enable3": false,
-      "lora_folder4": "",
-      "weight4": 1,
-      "enable4": false,
-      "lora_folder5": "",
-      "weight5": 1,
-      "enable5": false,
-      "lora_folder6": "",
-      "weight6": 1,
-      "enable6": false
-    },
-    "class_type": "随机LORA堆栈加载器",
-    "_meta": {
-      "title": "随机LORA堆栈加载器"
-    }
-  },
-  "11": {
-    "inputs": {
-      "model": [
-        "4",
-        0
+      "size": [
+        210,
+        91.45454406738281
       ],
-      "clip": [
-        "12",
-        0
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 40
+        }
       ],
-      "lora_stack": [
-        "10",
-        0
-      ]
-    },
-    "class_type": "CR Apply LoRA Stack",
-    "_meta": {
-      "title": "应用LoRA堆"
-    }
-  },
-  "12": {
-    "inputs": {
-      "stop_at_clip_layer": -2,
-      "clip": [
-        "4",
-        1
-      ]
-    },
-    "class_type": "CLIPSetLastLayer",
-    "_meta": {
-      "title": "CLIP设置停止层"
-    }
-  },
-  "22": {
-    "inputs": {
-      "images": [
-        "10",
-        1
-      ]
-    },
-    "class_type": "PreviewImage",
-    "_meta": {
-      "title": "预览图像"
-    }
-  },
-  "25": {
-    "inputs": {
-      "text": [
-        "10",
-        7
-      ]
-    },
-    "class_type": "ShowText|pysssss",
-    "_meta": {
-      "title": "展示文本"
-    }
-  },
-  "28": {
-    "inputs": {
-      "delimiter": ", ",
-      "clean_whitespace": "true",
-      "text_a": [
-        "25",
-        0
+      "outputs": [
+        {
+          "label": "字符串",
+          "name": "STRING",
+          "shape": 6,
+          "type": "STRING",
+          "links": null
+        }
       ],
-      "text_b": [
-        "29",
-        0
+      "properties": {
+        "cnr_id": "comfyui-custom-scripts",
+        "ver": "aac13aa7ce35b07d43633c3bbe654a38c00d74f5",
+        "Node name for S&R": "ShowText|pysssss",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        "未选择"
       ]
     },
-    "class_type": "Text Concatenate",
-    "_meta": {
-      "title": "文本连锁"
-    }
-  },
-  "29": {
-    "inputs": {
-      "value": "",
-      "speak_and_recognation": {
-        "__value__": [
+    {
+      "id": 36,
+      "type": "ShowText|pysssss",
+      "pos": [
+        161.5977325439453,
+        587.8942260742188
+      ],
+      "size": [
+        140,
+        76
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 54
+        }
+      ],
+      "outputs": [
+        {
+          "label": "字符串",
+          "name": "STRING",
+          "shape": 6,
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-custom-scripts",
+        "ver": "aac13aa7ce35b07d43633c3bbe654a38c00d74f5",
+        "Node name for S&R": "ShowText|pysssss",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        "未选择"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "CLIPTextEncode",
+      "pos": [
+        421.7881164550781,
+        482.951171875
+      ],
+      "size": [
+        425.27801513671875,
+        180.6060791015625
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "CLIP",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 50
+        }
+      ],
+      "outputs": [
+        {
+          "label": "条件",
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.45",
+        "Node name for S&R": "CLIPTextEncode",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        "",
+        [
           false,
           true
         ]
-      }
+      ]
     },
-    "class_type": "PrimitiveStringMultiline",
-    "_meta": {
-      "title": "字符串（多行）"
+    {
+      "id": 6,
+      "type": "CLIPTextEncode",
+      "pos": [
+        439.85906982421875,
+        252.79220581054688
+      ],
+      "size": [
+        422.84503173828125,
+        164.31304931640625
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "CLIP",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 49
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": 37
+        }
+      ],
+      "outputs": [
+        {
+          "label": "条件",
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.45",
+        "Node name for S&R": "CLIPTextEncode",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        "beautiful scenery nature glass bottle landscape, , purple galaxy bottle,",
+        [
+          false,
+          true
+        ]
+      ]
+    },
+    {
+      "id": 10,
+      "type": "随机LORA堆栈加载器",
+      "pos": [
+        -551.9133911132812,
+        363.23516845703125
+      ],
+      "size": [
+        270,
+        874
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "lora_stack_in",
+          "name": "lora_stack_in",
+          "shape": 7,
+          "type": "LORA_STACK",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "label": "lora_stack_out",
+          "name": "lora_stack_out",
+          "type": "LORA_STACK",
+          "links": [
+            10
+          ]
+        },
+        {
+          "label": "LORA名称1",
+          "name": "LORA名称1",
+          "type": "STRING",
+          "links": [
+            40
+          ]
+        },
+        {
+          "label": "LORA名称2",
+          "name": "LORA名称2",
+          "type": "STRING",
+          "links": [
+            54
+          ]
+        },
+        {
+          "label": "LORA名称3",
+          "name": "LORA名称3",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "label": "LORA名称4",
+          "name": "LORA名称4",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "label": "LORA名称5",
+          "name": "LORA名称5",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "label": "LORA名称6",
+          "name": "LORA名称6",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "label": "预览图片1",
+          "name": "预览图片1",
+          "type": "IMAGE",
+          "links": [
+            38
+          ]
+        },
+        {
+          "label": "预览图片2",
+          "name": "预览图片2",
+          "type": "IMAGE",
+          "links": [
+            53
+          ]
+        },
+        {
+          "label": "预览图片3",
+          "name": "预览图片3",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "label": "预览图片4",
+          "name": "预览图片4",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "label": "预览图片5",
+          "name": "预览图片5",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "label": "预览图片6",
+          "name": "预览图片6",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "label": "文本内容1",
+          "name": "文本内容1",
+          "type": "STRING",
+          "links": [
+            39
+          ]
+        },
+        {
+          "label": "文本内容2",
+          "name": "文本内容2",
+          "type": "STRING",
+          "links": [
+            52
+          ]
+        },
+        {
+          "label": "文本内容3",
+          "name": "文本内容3",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "label": "文本内容4",
+          "name": "文本内容4",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "label": "文本内容5",
+          "name": "文本内容5",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "label": "文本内容6",
+          "name": "文本内容6",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "aux_id": "zhang1san2feng3/comfyui-random_lora_stack",
+        "ver": "67bb5b3b001d92a98f69440b93ee5950fc1bb551",
+        "Node name for S&R": "随机LORA堆栈加载器",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        584563464085785,
+        "randomize",
+        "",
+        0.8,
+        false,
+        "",
+        0.6,
+        false,
+        "",
+        1,
+        false,
+        "",
+        1,
+        false,
+        "",
+        1,
+        false,
+        "",
+        1,
+        false
+      ]
+    },
+    {
+      "id": 30,
+      "type": "PreviewImage",
+      "pos": [
+        -223.59307861328125,
+        674.3750610351562
+      ],
+      "size": [
+        140,
+        246
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "图像",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 38
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.45",
+        "Node name for S&R": "PreviewImage",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 35,
+      "type": "PreviewImage",
+      "pos": [
+        -45.11544418334961,
+        690.3802490234375
+      ],
+      "size": [
+        140,
+        246
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "图像",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 53
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.45",
+        "Node name for S&R": "PreviewImage",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 31,
+      "type": "ShowText|pysssss",
+      "pos": [
+        -205.58987426757812,
+        984.64306640625
+      ],
+      "size": [
+        258.8443298339844,
+        99.22251892089844
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 39
+        }
+      ],
+      "outputs": [
+        {
+          "label": "字符串",
+          "name": "STRING",
+          "shape": 6,
+          "type": "STRING",
+          "links": [
+            51
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-custom-scripts",
+        "ver": "aac13aa7ce35b07d43633c3bbe654a38c00d74f5",
+        "Node name for S&R": "ShowText|pysssss",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 34,
+      "type": "ShowText|pysssss",
+      "pos": [
+        -211.9012908935547,
+        1155.0791015625
+      ],
+      "size": [
+        258.8443298339844,
+        99.22251892089844
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 52
+        }
+      ],
+      "outputs": [
+        {
+          "label": "字符串",
+          "name": "STRING",
+          "shape": 6,
+          "type": "STRING",
+          "links": [
+            57
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-custom-scripts",
+        "ver": "aac13aa7ce35b07d43633c3bbe654a38c00d74f5",
+        "Node name for S&R": "ShowText|pysssss",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 5,
+      "type": "EmptyLatentImage",
+      "pos": [
+        137.9400177001953,
+        707.889892578125
+      ],
+      "size": [
+        315,
+        106
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "label": "Latent",
+          "name": "LATENT",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.45",
+        "Node name for S&R": "EmptyLatentImage",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        1024,
+        1344,
+        1
+      ]
+    },
+    {
+      "id": 28,
+      "type": "Text Concatenate",
+      "pos": [
+        151.87818908691406,
+        872.656005859375
+      ],
+      "size": [
+        270,
+        142
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "文本_A",
+          "name": "text_a",
+          "shape": 7,
+          "type": "STRING",
+          "link": 51
+        },
+        {
+          "label": "文本_B",
+          "name": "text_b",
+          "shape": 7,
+          "type": "STRING",
+          "link": 57
+        },
+        {
+          "label": "文本_C",
+          "name": "text_c",
+          "shape": 7,
+          "type": "STRING",
+          "link": 56
+        },
+        {
+          "label": "文本_d",
+          "name": "text_d",
+          "shape": 7,
+          "type": "STRING",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "label": "字符串",
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            37
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "pr-was-node-suite-comfyui-47064894",
+        "ver": "ea935d1044ae5a26efa54ebeb18fe9020af49a45",
+        "Node name for S&R": "Text Concatenate",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        ", ",
+        "true"
+      ]
+    },
+    {
+      "id": 29,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        94.1372299194336,
+        1054.721923828125
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "label": "STRING",
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            56
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.45",
+        "Node name for S&R": "PrimitiveStringMultiline",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        "",
+        [
+          false,
+          true
+        ]
+      ]
+    },
+    {
+      "id": 3,
+      "type": "KSampler",
+      "pos": [
+        513.880126953125,
+        752.3881225585938
+      ],
+      "size": [
+        315,
+        474.0000305175781
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "模型",
+          "name": "model",
+          "type": "MODEL",
+          "link": 48
+        },
+        {
+          "label": "正面条件",
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 4
+        },
+        {
+          "label": "负面条件",
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 6
+        },
+        {
+          "label": "Latent",
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "label": "Latent",
+          "name": "LATENT",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.45",
+        "Node name for S&R": "KSampler",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        696183523300160,
+        "randomize",
+        20,
+        8,
+        "euler_ancestral",
+        "normal",
+        1
+      ]
+    },
+    {
+      "id": 8,
+      "type": "VAEDecode",
+      "pos": [
+        854.1751708984375,
+        691.8587646484375
+      ],
+      "size": [
+        210,
+        46
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "Latent",
+          "name": "samples",
+          "type": "LATENT",
+          "link": 7
+        },
+        {
+          "label": "VAE",
+          "name": "vae",
+          "type": "VAE",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "label": "图像",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.45",
+        "Node name for S&R": "VAEDecode",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 9,
+      "type": "SaveImage",
+      "pos": [
+        856.953857421875,
+        865.0719604492188
+      ],
+      "size": [
+        210,
+        270.0000305175781
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "图像",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 9
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.45",
+        "Node name for S&R": "SaveImage",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        "ComfyUI"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        -254.16534423828125,
+        359.1239318847656
+      ],
+      "size": [
+        315,
+        98
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "label": "模型",
+          "name": "MODEL",
+          "type": "MODEL",
+          "slot_index": 0,
+          "links": [
+            11
+          ]
+        },
+        {
+          "label": "CLIP",
+          "name": "CLIP",
+          "type": "CLIP",
+          "slot_index": 1,
+          "links": [
+            15
+          ]
+        },
+        {
+          "label": "VAE",
+          "name": "VAE",
+          "type": "VAE",
+          "slot_index": 2,
+          "links": [
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.45",
+        "Node name for S&R": "CheckpointLoaderSimple",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        "Illustrious\\Illustrious-XL-v1.0.safetensors"
+      ]
     }
-  }
+  ],
+  "links": [
+    [
+      2,
+      5,
+      0,
+      3,
+      3,
+      "LATENT"
+    ],
+    [
+      4,
+      6,
+      0,
+      3,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      6,
+      7,
+      0,
+      3,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      7,
+      3,
+      0,
+      8,
+      0,
+      "LATENT"
+    ],
+    [
+      8,
+      4,
+      2,
+      8,
+      1,
+      "VAE"
+    ],
+    [
+      9,
+      8,
+      0,
+      9,
+      0,
+      "IMAGE"
+    ],
+    [
+      10,
+      10,
+      0,
+      11,
+      2,
+      "LORA_STACK"
+    ],
+    [
+      11,
+      4,
+      0,
+      11,
+      0,
+      "MODEL"
+    ],
+    [
+      15,
+      4,
+      1,
+      12,
+      0,
+      "CLIP"
+    ],
+    [
+      16,
+      12,
+      0,
+      11,
+      1,
+      "CLIP"
+    ],
+    [
+      37,
+      28,
+      0,
+      6,
+      1,
+      "STRING"
+    ],
+    [
+      38,
+      10,
+      7,
+      30,
+      0,
+      "IMAGE"
+    ],
+    [
+      39,
+      10,
+      13,
+      31,
+      0,
+      "STRING"
+    ],
+    [
+      40,
+      10,
+      1,
+      32,
+      0,
+      "STRING"
+    ],
+    [
+      48,
+      11,
+      0,
+      3,
+      0,
+      "MODEL"
+    ],
+    [
+      49,
+      11,
+      1,
+      6,
+      0,
+      "CLIP"
+    ],
+    [
+      50,
+      11,
+      1,
+      7,
+      0,
+      "CLIP"
+    ],
+    [
+      51,
+      31,
+      0,
+      28,
+      0,
+      "STRING"
+    ],
+    [
+      52,
+      10,
+      14,
+      34,
+      0,
+      "STRING"
+    ],
+    [
+      53,
+      10,
+      8,
+      35,
+      0,
+      "IMAGE"
+    ],
+    [
+      54,
+      10,
+      2,
+      36,
+      0,
+      "STRING"
+    ],
+    [
+      56,
+      29,
+      0,
+      28,
+      2,
+      "STRING"
+    ],
+    [
+      57,
+      34,
+      0,
+      28,
+      1,
+      "STRING"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 1,
+      "offset": [
+        851.1637494541187,
+        -200.6034124809945
+      ]
+    },
+    "ue_links": [],
+    "links_added_by_ue": [],
+    "frontendVersion": "1.23.4",
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0,
+    "VHS_MetadataImage": true,
+    "VHS_KeepIntermediate": true
+  },
+  "version": 0.4
 }
