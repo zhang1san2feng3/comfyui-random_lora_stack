@@ -1,0 +1,239 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 500991955154757,
+      "steps": 20,
+      "cfg": 8,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 1,
+      "model": [
+        "11",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "K采样器"
+    }
+  },
+  "4": {
+    "inputs": {
+      "ckpt_name": "Illustrious\\Illustrious-XL-v1.0.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Checkpoint加载器(简易)"
+    }
+  },
+  "5": {
+    "inputs": {
+      "width": 512,
+      "height": 512,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "空Latent"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": [
+        "28",
+        0
+      ],
+      "speak_and_recognation": {
+        "__value__": [
+          false,
+          true
+        ]
+      },
+      "clip": [
+        "11",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP文本编码器"
+    }
+  },
+  "7": {
+    "inputs": {
+      "text": "text, watermark",
+      "speak_and_recognation": {
+        "__value__": [
+          false,
+          true
+        ]
+      },
+      "clip": [
+        "11",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP文本编码器"
+    }
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE解码"
+    }
+  },
+  "9": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "保存图像"
+    }
+  },
+  "10": {
+    "inputs": {
+      "seed": 28870165,
+      "lora_folder1": "",
+      "weight1": 1,
+      "enable1": false,
+      "lora_folder2": "",
+      "weight2": 1,
+      "enable2": false,
+      "lora_folder3": "",
+      "weight3": 1,
+      "enable3": false,
+      "lora_folder4": "",
+      "weight4": 1,
+      "enable4": false,
+      "lora_folder5": "",
+      "weight5": 1,
+      "enable5": false,
+      "lora_folder6": "",
+      "weight6": 1,
+      "enable6": false
+    },
+    "class_type": "随机LORA堆栈加载器",
+    "_meta": {
+      "title": "随机LORA堆栈加载器"
+    }
+  },
+  "11": {
+    "inputs": {
+      "model": [
+        "4",
+        0
+      ],
+      "clip": [
+        "12",
+        0
+      ],
+      "lora_stack": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "CR Apply LoRA Stack",
+    "_meta": {
+      "title": "应用LoRA堆"
+    }
+  },
+  "12": {
+    "inputs": {
+      "stop_at_clip_layer": -2,
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPSetLastLayer",
+    "_meta": {
+      "title": "CLIP设置停止层"
+    }
+  },
+  "22": {
+    "inputs": {
+      "images": [
+        "10",
+        1
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "预览图像"
+    }
+  },
+  "25": {
+    "inputs": {
+      "text": [
+        "10",
+        7
+      ]
+    },
+    "class_type": "ShowText|pysssss",
+    "_meta": {
+      "title": "展示文本"
+    }
+  },
+  "28": {
+    "inputs": {
+      "delimiter": ", ",
+      "clean_whitespace": "true",
+      "text_a": [
+        "25",
+        0
+      ],
+      "text_b": [
+        "29",
+        0
+      ]
+    },
+    "class_type": "Text Concatenate",
+    "_meta": {
+      "title": "文本连锁"
+    }
+  },
+  "29": {
+    "inputs": {
+      "value": "",
+      "speak_and_recognation": {
+        "__value__": [
+          false,
+          true
+        ]
+      }
+    },
+    "class_type": "PrimitiveStringMultiline",
+    "_meta": {
+      "title": "字符串（多行）"
+    }
+  }
+}
