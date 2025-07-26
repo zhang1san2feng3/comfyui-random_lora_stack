@@ -16,7 +16,6 @@ def get_lora_folders():
         print(f"Searching for LORA folders in: {loras_full_path}")
         
         if not os.path.exists(loras_full_path):
-            print(f"LORA directory not found: {loras_full_path}")
             return [""]
         
         folders = [""]  # 空选项作为第一个选择
@@ -31,10 +30,8 @@ def get_lora_folders():
         
         # 按字母顺序排序，但保持空选项在最前面
         sorted_folders = [""] + sorted([f for f in folders if f != ""])
-        print(f"Found {len(sorted_folders)-1} LORA folders: {sorted_folders[:10]}")  # 显示前10个
         return sorted_folders
     except Exception as e:
-        print(f"Error getting lora folders: {e}")
         return [""]
 
 class RandomLoraStackLoader:
@@ -51,30 +48,36 @@ class RandomLoraStackLoader:
                 "lora_stack_in": ("LORA_STACK",),
             },
             "required": {
-                "seed": ("INT", {"default": 0, "min": 0, "max": 999999999}),
+                "seed": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}),
                 "lora_folder1": (lora_folders, {"default": ""}),
-                "weight1": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0}),
+                "weight1": ("FLOAT", {"default": 1.0, "min": -10.0, "max": 10.0, "step": 0.1}),
                 "enable1": ("BOOLEAN", {"default": True}),
                 "lora_folder2": (lora_folders, {"default": ""}),
-                "weight2": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0}),
+                "weight2": ("FLOAT", {"default": 1.0, "min": -10.0, "max": 10.0, "step": 0.1}),
                 "enable2": ("BOOLEAN", {"default": True}),
                 "lora_folder3": (lora_folders, {"default": ""}),
-                "weight3": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0}),
+                "weight3": ("FLOAT", {"default": 1.0, "min": -10.0, "max": 10.0, "step": 0.1}),
                 "enable3": ("BOOLEAN", {"default": True}),
                 "lora_folder4": (lora_folders, {"default": ""}),
-                "weight4": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0}),
+                "weight4": ("FLOAT", {"default": 1.0, "min": -10.0, "max": 10.0, "step": 0.1}),
                 "enable4": ("BOOLEAN", {"default": True}),
                 "lora_folder5": (lora_folders, {"default": ""}),
-                "weight5": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0}),
+                "weight5": ("FLOAT", {"default": 1.0, "min": -10.0, "max": 10.0, "step": 0.1}),
                 "enable5": ("BOOLEAN", {"default": True}),
                 "lora_folder6": (lora_folders, {"default": ""}),
-                "weight6": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0}),
+                "weight6": ("FLOAT", {"default": 1.0, "min": -10.0, "max": 10.0, "step": 0.1}),
                 "enable6": ("BOOLEAN", {"default": True}),
             }
         }
 
-    RETURN_TYPES = ("LORA_STACK", "IMAGE", "IMAGE", "IMAGE", "IMAGE", "IMAGE", "IMAGE", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING")
-    RETURN_NAMES = ("lora_stack_out", "预览图片1", "预览图片2", "预览图片3", "预览图片4", "预览图片5", "预览图片6", "文本1", "文本2", "文本3", "文本4", "文本5", "文本6")
+    RETURN_TYPES = ("LORA_STACK", 
+                    "STRING", "STRING", "STRING", "STRING", "STRING", "STRING",
+                    "IMAGE", "IMAGE", "IMAGE", "IMAGE", "IMAGE", "IMAGE", 
+                    "STRING", "STRING", "STRING", "STRING", "STRING", "STRING")
+    RETURN_NAMES = ("lora_stack_out", 
+                    "LORA名称1", "LORA名称2", "LORA名称3", "LORA名称4", "LORA名称5", "LORA名称6",
+                    "预览图片1", "预览图片2", "预览图片3", "预览图片4", "预览图片5", "预览图片6", 
+                    "文本内容1", "文本内容2", "文本内容3", "文本内容4", "文本内容5", "文本内容6")
     FUNCTION = "load_random_loras"
     CATEGORY = "LORA"
 
@@ -91,6 +94,7 @@ class RandomLoraStackLoader:
         enables = [enable1, enable2, enable3, enable4, enable5, enable6]
         images = []
         texts = []
+        selected_loras = []  # 存储随机选择的LORA文件名
         
         # 获取完整的loras目录路径 - 使用相对路径方法
         current_file = os.path.abspath(__file__)
@@ -101,28 +105,59 @@ class RandomLoraStackLoader:
             if not enables[idx] or not folders[idx]:
                 images.append(None)
                 texts.append("")
+                selected_loras.append("未选择")
                 continue
             
             # 将相对路径转换为完整路径
             folder = os.path.join(loras_base_path, folders[idx])
             
             if not os.path.isdir(folder):
-                print(f"Warning: LORA folder not found: {folder}")
                 images.append(None)
                 texts.append("")
+                selected_loras.append("文件夹不存在")
                 continue
+                
             files = os.listdir(folder)
+            
+            # 获取所有LORA文件（.safetensors或.ckpt）
+            lora_files = [f for f in files if f.lower().endswith((".safetensors", ".ckpt", ".pt", ".pth"))]
             img_files = [f for f in files if f.lower().endswith((".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp"))]
             txt_files = [f for f in files if f.lower().endswith(".txt")]
-            if not img_files or not txt_files:
-                print(f"Warning: No image or text files found in folder: {folder}")
+            
+            if not lora_files:
+                images.append(None)
+                texts.append("")
+                selected_loras.append("无LORA文件")
+                continue
+                
+            # 随机选择一个LORA文件
+            selected_lora = random.choice(lora_files)
+            selected_loras.append(selected_lora)
+            
+            # 获取LORA文件名（不带后缀）
+            lora_basename = os.path.splitext(selected_lora)[0]
+            
+            # 查找与LORA文件名匹配的图片和文本文件
+            matching_img = None
+            matching_txt = None
+            
+            for img_file in img_files:
+                if os.path.splitext(img_file)[0] == lora_basename:
+                    matching_img = img_file
+                    break
+                    
+            for txt_file in txt_files:
+                if os.path.splitext(txt_file)[0] == lora_basename:
+                    matching_txt = txt_file
+                    break
+            
+            if not matching_img or not matching_txt:
                 images.append(None)
                 texts.append("")
                 continue
-            img_file = random.choice(img_files)
-            txt_file = random.choice(txt_files)
-            img_path = os.path.join(folder, img_file)
-            txt_path = os.path.join(folder, txt_file)
+                
+            img_path = os.path.join(folder, matching_img)
+            txt_path = os.path.join(folder, matching_txt)
             try:
                 # 严格验证图片格式
                 img = Image.open(img_path)
@@ -142,7 +177,6 @@ class RandomLoraStackLoader:
                 else:
                     images.append(np.zeros((64,64,3), dtype=np.uint8))
             except Exception as e:
-                print(f"Error loading image {img_path}: {e}")
                 images.append(np.zeros((64,64,3), dtype=np.uint8))
             try:
                 with open(txt_path, 'r', encoding='utf-8') as f:
@@ -155,6 +189,9 @@ class RandomLoraStackLoader:
             if enables[idx] and folders[idx] and (images[idx] is None or texts[idx] == ""):
                 raise RuntimeError(f"第{idx+1}个LORA文件夹未能正确加载图片或文本，请检查文件夹内容！")
         
+        # 处理随机LORA名称输出
+        processed_lora_names = [name if name else "未选择" for name in selected_loras]
+        
         # 处理图片输出 - 创建标准的ComfyUI图片张量 (NHWC格式)
         import torch
         processed_images = []
@@ -163,7 +200,6 @@ class RandomLoraStackLoader:
                 # 创建64x64的彩色噪声图片作为占位图，使用ComfyUI标准格式 [1, H, W, 3]
                 noise_img = torch.rand(1, 64, 64, 3, dtype=torch.float32) * 0.1  # 很暗的噪声
                 processed_images.append(noise_img)
-                print(f"Image {idx+1}: using noise placeholder with shape {noise_img.shape}")
             else:
                 # 处理有效图片
                 try:
@@ -188,17 +224,23 @@ class RandomLoraStackLoader:
                     assert tensor.shape[3] == 3, f"Channels should be 3, got {tensor.shape[3]}"
                     
                     processed_images.append(tensor)
-                    print(f"Image {idx+1}: processed successfully, shape {tensor.shape}, dtype {tensor.dtype}")
                 except Exception as e:
-                    print(f"Error processing image {idx+1}: {e}, using noise fallback")
                     noise_img = torch.rand(1, 64, 64, 3, dtype=torch.float32) * 0.1
                     processed_images.append(noise_img)
         
         # 处理文本输出
         processed_texts = [txt if txt else "" for txt in texts]
         
-        # lora_stack_out直接传递输入
-        lora_stack_out = lora_stack_in
+        # 构建真正的LORA_STACK
+        lora_stack_out = lora_stack_in if lora_stack_in is not None else []
+        
+        # 将当前节点选择的LORA添加到堆栈中
+        for idx in range(6):
+            if enables[idx] and folders[idx] and selected_loras[idx] not in ["未选择", "文件夹不存在", "无LORA文件"]:
+                # 构建LORA文件的完整路径
+                lora_file_path = os.path.join(folders[idx], selected_loras[idx])
+                # 添加到LORA堆栈 - ComfyUI LORA_STACK格式: (lora_name, strength_model, strength_clip)
+                lora_stack_out.append((lora_file_path, weights[idx], weights[idx]))
         
         # 确保返回的数据结构正确：1个lora_stack + 6个图片 + 6个文本
         # 创建全新的张量副本，彻底避免引用问题
@@ -212,13 +254,13 @@ class RandomLoraStackLoader:
             
             # 最终验证 - ComfyUI图像格式: [Batch, Height, Width, Channels]
             if new_tensor.dim() != 4 or new_tensor.shape[0] != 1 or new_tensor.shape[3] != 3:
-                print(f"Final check failed for image {i+1}: shape {new_tensor.shape}, creating new fallback")
                 new_tensor = torch.rand(1, 64, 64, 3, dtype=torch.float32) * 0.1
             
             final_images.append(new_tensor)
-            print(f"Final image {i+1}: shape {new_tensor.shape}, dtype {new_tensor.dtype}")
         
         return (lora_stack_out, 
+                processed_lora_names[0], processed_lora_names[1], processed_lora_names[2],
+                processed_lora_names[3], processed_lora_names[4], processed_lora_names[5],
                 final_images[0], final_images[1], final_images[2], 
                 final_images[3], final_images[4], final_images[5],
                 processed_texts[0], processed_texts[1], processed_texts[2],
