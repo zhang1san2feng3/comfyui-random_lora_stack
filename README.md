@@ -10,7 +10,8 @@
 具体工作流如图
 
 
-<img width="1540" height="1024" alt="ff0a33c42da05579c2dc2a2584e0e57" src="https://github.com/user-attachments/assets/c7f57ae8-2289-47eb-84e6-0c7a3f8669b4" />
+<img width="1749" height="1095" alt="6685810e515e3ed6277614bb6ed7566" src="https://github.com/user-attachments/assets/6844f72b-b9bf-4c5b-ab2b-5a2151d17e52" />
+
 
 
 如果有报错请联系我，但是我不确定我有没有能力去解决。
