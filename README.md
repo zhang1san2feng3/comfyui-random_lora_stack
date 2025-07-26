@@ -13,4 +13,4 @@
 <img width="1540" height="1024" alt="ff0a33c42da05579c2dc2a2584e0e57" src="https://github.com/user-attachments/assets/c7f57ae8-2289-47eb-84e6-0c7a3f8669b4" />
 
 
-如果有报错请联系我，但是我不确定我又没有能力去解决。
+如果有报错请联系我，但是我不确定我有没有能力去解决。
