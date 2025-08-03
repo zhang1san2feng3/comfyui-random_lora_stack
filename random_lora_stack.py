@@ -151,44 +151,45 @@ class RandomLoraStackLoader:
                     matching_txt = txt_file
                     break
             
-            if not matching_img or not matching_txt:
-                images.append(None)
-                texts.append("")
-                continue
-                
-            img_path = os.path.join(folder, matching_img)
-            txt_path = os.path.join(folder, matching_txt)
-            try:
-                # 严格验证图片格式
-                img = Image.open(img_path)
-                # 检查是否为有效图片文件
-                img.verify()  # 验证图片完整性
-                img = Image.open(img_path)  # 重新打开（verify后需要重新打开）
-                img = img.convert('RGB')  # 强制转RGB
-                img_np = np.array(img)
-                # 严格检查shape：必须是3维且最后一维为3
-                if img_np.ndim == 3 and img_np.shape[2] == 3 and img_np.size > 0:
-                    # 确保最小尺寸
-                    h, w = img_np.shape[:2]
-                    if h >= 1 and w >= 1:
-                        images.append(img_np)
+            # 处理图片文件
+            if matching_img:
+                img_path = os.path.join(folder, matching_img)
+                try:
+                    # 严格验证图片格式
+                    img = Image.open(img_path)
+                    # 检查是否为有效图片文件
+                    img.verify()  # 验证图片完整性
+                    img = Image.open(img_path)  # 重新打开（verify后需要重新打开）
+                    img = img.convert('RGB')  # 强制转RGB
+                    img_np = np.array(img)
+                    # 严格检查shape：必须是3维且最后一维为3
+                    if img_np.ndim == 3 and img_np.shape[2] == 3 and img_np.size > 0:
+                        # 确保最小尺寸
+                        h, w = img_np.shape[:2]
+                        if h >= 1 and w >= 1:
+                            images.append(img_np)
+                        else:
+                            images.append(np.zeros((64,64,3), dtype=np.uint8))
                     else:
                         images.append(np.zeros((64,64,3), dtype=np.uint8))
-                else:
+                except Exception as e:
                     images.append(np.zeros((64,64,3), dtype=np.uint8))
-            except Exception as e:
+            else:
+                # 没有对应图片，使用黑色占位图
                 images.append(np.zeros((64,64,3), dtype=np.uint8))
-            try:
-                with open(txt_path, 'r', encoding='utf-8') as f:
-                    text = f.read()
-                texts.append(text)
-            except Exception as e:
-                texts.append("")
-        # 校验：如果有启用但没内容，报错
-        for idx in range(6):
-            if enables[idx] and folders[idx] and (images[idx] is None or texts[idx] == ""):
-                raise RuntimeError(f"第{idx+1}个LORA文件夹未能正确加载图片或文本，请检查文件夹内容！")
-        
+            
+            # 处理文本文件
+            if matching_txt:
+                txt_path = os.path.join(folder, matching_txt)
+                try:
+                    with open(txt_path, 'r', encoding='utf-8') as f:
+                        text = f.read()
+                    texts.append(text)
+                except Exception as e:
+                    texts.append("无")
+            else:
+                # 没有对应文本文件
+                texts.append("无")
         # 处理随机LORA名称输出
         processed_lora_names = [name if name else "未选择" for name in selected_loras]
         
@@ -229,10 +230,14 @@ class RandomLoraStackLoader:
                     processed_images.append(noise_img)
         
         # 处理文本输出
-        processed_texts = [txt if txt else "" for txt in texts]
+        processed_texts = [txt if txt else "无" for txt in texts]
         
-        # 构建真正的LORA_STACK
-        lora_stack_out = lora_stack_in if lora_stack_in is not None else []
+        # 构建真正的LORA_STACK - 先添加输入的LORA堆栈，然后添加当前节点的LORA
+        lora_stack_out = []
+        
+        # 如果有输入的LORA堆栈，先添加到输出
+        if lora_stack_in is not None:
+            lora_stack_out.extend(lora_stack_in)
         
         # 将当前节点选择的LORA添加到堆栈中
         for idx in range(6):
