@@ -30,11 +30,13 @@ def find_content_by_tag(full_text, tag_name):
     """内部工具：寻找指定标签的内容"""
     if not tag_name or tag_name.strip() == "":
         return None
+    # 匹配标签起点（支持中英文冒号）
     start_pattern = re.compile(re.escape(tag_name.strip()) + r"\s*[:：]", flags=re.MULTILINE)
     start_match = start_pattern.search(full_text)
     if not start_match:
         return None
     content_start = start_match.end()
+    # 寻找下一个标签作为终点
     next_tag_pattern = re.compile(r"^[^\r\n:：]+\s*[:：]", flags=re.MULTILINE)
     next_match = next_tag_pattern.search(full_text, pos=content_start)
     if next_match:
@@ -43,17 +45,28 @@ def find_content_by_tag(full_text, tag_name):
         return full_text[content_start:].strip()
 
 def extract_tag_section(full_text: str, tag_name: str) -> str:
-    """按三级降级逻辑提取提示词"""
+    """
+    按三级降级逻辑提取提示词，并自动剔除 ## 名称行
+    """
     if not full_text:
         return ""
+
+    # 1. 尝试寻找用户指定的标签内容
     result = find_content_by_tag(full_text, tag_name)
     if result is not None:
         return result
+
+    # 2. 如果没找到，且用户搜的不是“默认服装”，则自动寻找“默认服装”
     if tag_name.strip() != "默认服装":
         result = find_content_by_tag(full_text, "默认服装")
         if result is not None:
             return result
-    return full_text
+
+    # 3. 回退逻辑：返回全文，但必须剔除 ## 开头的行
+    lines = full_text.splitlines()
+    # 过滤掉所有以 ## 开头的行
+    filtered_lines = [line for line in lines if not line.strip().startswith("##")]
+    return "\n".join(filtered_lines).strip()
 
 class RandomLoraStackLoader:
     @classmethod
@@ -118,7 +131,7 @@ class RandomLoraStackLoader:
         weights = [weight1, weight2, weight3, weight4, weight5, weight6]
         enables = [enable1, enable2, enable3, enable4, enable5, enable6]
         
-        out_display_names = [] # 这里存储最终显示的名称（可能是##后的，也可能是文件名）
+        out_display_names = []
         out_images = []
         out_texts = []
         lora_stack_out = list(lora_stack_in) if lora_stack_in else []
@@ -152,15 +165,12 @@ class RandomLoraStackLoader:
 
             sel_lora = random.choice(lora_files)
             base_name = os.path.splitext(sel_lora)[0]
-            
-            # 默认显示名称为文件名
             final_display_name = sel_lora 
 
-            # 存入 LORA 堆栈
             rel_lora_path = os.path.join(folders[i], sel_lora)
             lora_stack_out.append((rel_lora_path, weights[i], weights[i]))
 
-            # 图片预览逻辑
+            # 图片预览
             img_found = False
             for ext in [".png", ".jpg", ".jpeg", ".webp"]:
                 img_path = os.path.join(full_folder_path, base_name + ext)
@@ -175,20 +185,19 @@ class RandomLoraStackLoader:
             if not img_found:
                 out_images.append(torch.rand(1, 64, 64, 3, dtype=torch.float32) * 0.1)
 
-            # 核心修改：文本读取逻辑与名称别名提取
+            # 文本提取逻辑与名称别名提取
             txt_path = os.path.join(full_folder_path, base_name + ".txt")
             if os.path.exists(txt_path):
                 try:
                     with open(txt_path, 'r', encoding='utf-8') as f:
-                        lines = f.readlines()
-                        raw_text = "".join(lines)
+                        raw_text = f.read()
+                        lines = raw_text.splitlines()
                         
-                        # --- 检查第一行是否有 ## 别名 ---
+                        # 提取名称别名 (保持原样输出到“LORA名称”接口)
                         if lines and lines[0].strip().startswith("##"):
-                            # 提取 ## 之后的内容，去掉前后的空格和换行
                             final_display_name = lines[0].strip()[2:].strip()
                     
-                    # 使用提取函数获取提示词
+                    # 关键修改：提取提示词时会自动剔除 ## 行
                     final_text = extract_tag_section(raw_text, tag_names[i])
                     out_texts.append(final_text)
                 except:
